@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Мои исследования</h1>
+<ul>
+    {% for appointment in messages %}
+<p>    doctor {{ appointment.doctor }}</p>
+ <p>       date {{ appointment.date }}</p>
+    <p>    notes {{ appointment.notes }}</p>
+       <p> body {{ appointment.body }}</p>
+       <p> images {{ appointment.images }}</p>
+
+    {% endfor %}
+</ul>
+{% endblock %}

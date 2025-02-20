@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div style="flex-grow: 1;">
+    <h1 style="margin-bottom: 20px;">Отправить сообщение</h1>
+</div>
+<form method="post">
+    {% csrf_token %}
+
+    
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.receiver.label}}
+    </label>
+    <select name="receiver" required="" id="id_receiver" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
+        {% for receiver in form.receiver %}
+            {{ receiver }}
+        {% endfor %}
+    </select><br>
+
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.body.label}}
+    </label>
+    <textarea name="body" cols="40" rows="10" required="" id="id_content" style="
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #D9D9D9;
+    font-size: 16px;
+    color: #333;
+    box-sizing: border-box;
+    resize: vertical; /* Разрешаем изменение размера только по вертикали */
+    transition: background-color 0.3s, border-color 0.3s;
+  "></textarea><br>
+
+    <button type="submit" type="submit" style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: #333;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">Отправить</button>
+</form>
+{% endblock %}

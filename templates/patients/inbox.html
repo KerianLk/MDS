@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div style="flex-grow: 1;">
+    <h1 style="margin-bottom: 20px;">Мои сообщения</h1>
+</div>
+<!--
+{% for doc in doctors %}
+Doctor {{ doc.first_name }} {{ doc.last_name }}
+ <p>     <a href="{% url 'patient:inbox_current' doc.id %}">Открыть чат</a></p>
+
+{% endfor %}
+{% for doc in patient %}
+<span style="padding-bottom: 20px;">Patient {{ doc.first_name }} {{ doc.last_name }}
+<a style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: #333;cursor: pointer;transition: background-color 0.3s, border-color 0.3s; float: right;" href="{% url 'doctor:inbox_current' doc.id %}">Открыть чат</a>
+</span>
+
+{% endfor %}
+<ul>
+    {% for appointment in messages %}
+<div style=" display: flex; flex-direction: column; margin-bottom: 15px; max-width: 70%; padding: 10px;  border-radius: 10px; position: relative;  transform: translateY(10px); animation: fadeIn 0.3s ease forwards;"> {{ appointment.created_at }} <br> Sender: {{ appointment.sender }} <br>Message: {{ appointment.body }}</div>
+    {% endfor %}
+</ul>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+     {{ form.receiver.as_hidden }}
+    {{ form.body}}  <!-- Форма для пользователя -->
+<!--    <br>
+    <button style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: #333;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;" type="submit">Отправить</button>
+</form>
+-->
+<div>
+    <table style="width: 100%;border-collapse: collapse;">
+        <thead style="color: black;">
+            <tr>
+                <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;">Отправитель</th>
+                <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;">Дата</th>
+                <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;">Сообщение</th>
+                <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in messages %}
+            <tr style="color:black;">
+                <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> {{ appointment.sender }} </td>
+                <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> {{ appointment.created_at }} </td>
+                <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> {{ appointment.body }} </td>
+                <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;">
+                    <a style="color:#A28564;text-decoration: none;" href="{% url 'doctor:inbox_current' appointment.sender.id %}">Открыть чат</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+{% endblock %}

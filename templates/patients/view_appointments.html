@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div style="flex-grow: 1;">
+    <h1 style="margin-bottom: 20px;">Мои записи</h1>
+</div>
+<div>
+Сортировать: 
+<select id="sortSelect" onchange="sortTable()" style="-webkit-appearance: none;-moz-appearance: none;appearance: none;width: 300px;padding: 10px;border:none; background-color: #FFF3E5;color: #333;font-size: 16px;cursor: pointer;transition: border-color 0.3s ease;">
+    <option value="name_asc" style="padding: 10px;">по имени (по возрастанию)</option> |
+    <option value="name_desc" style="padding: 10px;">по имени (по убыванию)</option> |
+    <option value="date_added_asc" style="padding: 10px;">по дате добавления (по возрастанию)</option> |
+    <option value="date_added_desc" style="padding: 10px;">по дате добавления (по убыванию)</option>
+</select>
+</div>
+<br>
+
+
+<div>
+    <table style="width: 100%;border-collapse: collapse;">
+        <thead style="color: black;">
+            <tr>
+                <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;">ФИО доктора</th>
+                <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;">Дата/Время приема</th>
+                <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;">Услуга</th>
+                <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in appointments %}
+            <tr style="color:black;">
+                <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> Dr. {{ appointment.doctor.get_full_name }} </td>
+                <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> {{ appointment.date }} {{ appointment.time }} </td>
+                <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> {{ appointment.usluga }} </td>
+                <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;">
+                    <a style="color:#A28564;text-decoration: none;" href="{% url 'patient:delete_appointment' appointment.id %}">Отменить запись</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+
+    <script>
+        // JavaScript function to open URL based on selected option
+        function sortTable() {
+            const select = document.getElementById("sortSelect");
+            const selectedValue = select.value;
+        
+            // Define URLs for each option
+            const urls = {
+                "": "", // Default (no action)
+                "name_asc": "?sort_by=name&order=asc",
+                "name_desc": "?sort_by=name&order=desc",
+                "date_added_asc": "?sort_by=date_added&order=asc",
+                "date_added_desc": "?sort_by=date_added&order=desc"
+            };
+        
+            // Open the URL associated with the selected option
+            if (urls[selectedValue]) {
+                console.log(urls[selectedValue]);
+                window.location.href = urls[selectedValue];
+            }
+        }
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+// Function to set default option based on URL parameter
+        function setDefaultOption() {
+            const defaultSort = getQueryParam('sort_by') + "_" + getQueryParam('order'); // Get 'sort' parameter from URL
+            if (defaultSort == "null_null")
+                defaultSort = "name_asc";
+            const select = document.getElementById("sortSelect");
+            console.log(defaultSort);
+
+            if (defaultSort) {
+                select.value = defaultSort; // Set the selected value based on the parameter
+            }
+        }
+
+// Call the function to set default option when the page loads
+        window.onload = setDefaultOption;
+
+
+        </script>
+
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "admin_panel/base.html" %}
+
+{% block content %}
+<div style="flex-grow: 1;">
+    <h1 style="margin-bottom: 20px;">{{ form.instance.pk|yesno:"Редактировать ,Добавить " }}</h1>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label style="color: #333;margin-bottom: 8px;display: block;">
+            {{form.patient.label}}
+        </label>
+        <select name="patient" required="" id="id_patient" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
+            {% for patient in form.patient %}
+                {{ patient }}
+            {% endfor %}
+        </select>
+<br>
+        <label style="color: #333;margin-bottom: 8px;display: block;">
+            {{form.doctor.label}}
+        </label>
+        <select name="doctor" required="" id="id_doctor" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
+            {% for doctor in form.doctor %}
+                {{ doctor }}
+            {% endfor %}
+        </select>
+        <br>
+        <label style="color: #333;margin-bottom: 8px;display: block;">
+            {{form.date.label}}
+        </label>
+        <input type="date" name="date" value="{{appointment.date}}" required="" id="id_date" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
+        <br>
+        <label style="color: #333;margin-bottom: 8px;display: block;">
+            {{form.time.label}}
+        </label>
+        <input type="time" name="time" value="{{appointment.time}}" required="" id="id_time" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
+        <br>
+        <label style="color: #333;margin-bottom: 8px;display: block;">
+            {{form.usluga.label}}
+        </label>
+        <select name="usluga" required="" id="id_usluga" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
+            {% for usluga in form.usluga %}
+                {{ usluga }}
+            {% endfor %}
+        </select>
+        <br>
+        <label style="color: #333;margin-bottom: 8px;display: block;">
+            {{form.status.label}}
+        </label>
+        <input type="text" name="status" required="" value id="id_status" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
+        <br>
+
+        <button type="submit" style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: #333;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">Сохранить</button>
+    </form>
+{% endblock %}
+
+{% block content_right %}
+<a href="{% url 'admin_panel:appointment_list' %}" class="button" style="background-color: white; color: #03A50E;text-decoration: none; font-size: 15px; width: 110%; height: 150%;"><p style=" margin-top: 25%; margin-left: 15%;">Вернуться</p></a>
+{% endblock %}

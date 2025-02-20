@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div style="flex-grow: 1;">
+    <h1 style="margin-bottom: 20px;">Запись на прием</h1>
+    </div>
+<form method="post">
+    {% csrf_token %}
+
+    {% if user.role == "patient" %}
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.doctor.label}}
+    </label>
+    <select name="doctor" required="" id="id_doctor" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
+        {% for doctor in form.doctor %}
+            {{ doctor }}
+        {% endfor %}
+    </select>
+    {% else %}
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.patient.label}}
+    </label>
+    <select name="patient" required="" id="id_patient" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
+        {% for patient in form.patient %}
+            {{ patient }}
+        {% endfor %}
+    </select>
+    {% endif %}
+
+    <br>
+
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.usluga.label}}
+    </label>
+    <select name="usluga" required="" id="id_usluga" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
+        {% for usluga in form.usluga %}
+            {{ usluga }}
+        {% endfor %}
+    </select><br>
+
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.date.label}}
+    </label>
+    <input type="date" name="date" maxlength="255" required="" id="id_date" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
+    <br>
+
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.time.label}}
+    </label>
+    <input type="time" name="time" maxlength="255" required="" id="id_time" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
+    <br>
+
+    <div class="time-slots">
+        {% for value, label in form.time.field.choices %}
+            {% if value in booked_slots %}
+                <button type="button" class="slot unavailable">{{ label }}</button>
+            {% else %}
+                <button type="submit" name="time" value="{{ value }}" class="slot available">{{ label }}</button>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <button type="submit" style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: #333;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">Записаться</button>
+</form>
+<script>
+    document.getElementById('id_date').addEventListener('change', function () {
+    const date = this.value;
+    const specialist = document.getElementById('id_doctor').value;
+ console.log( fetch(`http://127.0.0.1:8000/patient/appointments/book?date=${date}&doctor=${specialist}`));
+    fetch(`http://127.0.0.1:8000/patient/appointments/book?date=${date}&doctor=${specialist}`)
+        .then(response => response.json())
+        .then(data => {
+
+            const slotsContainer = document.querySelector('.time-slots');
+            slotsContainer.innerHTML = '';
+            data.slots.forEach(slot => {
+                const button = document.createElement('button');
+                button.textContent = slot.label;
+                button.className = slot.is_available ? 'slot available' : 'slot unavailable';
+                slotsContainer.appendChild(button);
+            });
+        });
+});
+</script>
+
+{% endblock %}
+

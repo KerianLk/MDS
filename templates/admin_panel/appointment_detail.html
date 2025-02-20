@@ -1,0 +1,29 @@
+{% extends "admin_panel/base.html" %}
+
+{% block content %}
+    <div style="flex-grow: 1;">
+        <h1 style="margin-bottom: 20px;">Детали заявки</h1>
+    </div>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Пациент: {{ appointment.patient }}</label>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Доктор: {{ appointment.doctor }}</label>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Услуга: {{ appointment.get_usluga_display }}</label>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Дата: {{ appointment.date }}</label>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Время: {{ appointment.time }}</label>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Статус: {{ appointment.status }}</label> 
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Дата создания:  {{ appointment.created_at }}</label> 
+    <table style="width: 50%;">
+        <tr>
+            <td>
+                <a href="{% url 'admin_panel:appointment_edit' appointment.pk %}" style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: #333;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">Редактировать</a><br>
+            </td>
+            <td>
+                <a href="{% url 'admin_panel:appointment_delete' appointment.pk %}" onclick="return confirm('Удалить отзыв?');" style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: red;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">Удалить</a>
+            </td>
+        </tr>
+    </table>
+
+{% endblock %}
+
+{% block content_right %}
+<a href="{% url 'admin_panel:appointment_list' %}" class="button" style="background-color: white; color: #03A50E;text-decoration: none; font-size: 15px; width: 110%; height: 150%;"><p style=" margin-top: 25%; margin-left: 15%;">Вернуться</p></a>
+{% endblock %}

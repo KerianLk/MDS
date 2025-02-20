@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<div style="flex-grow: 1;">
+    <h1 style="margin-bottom: 20px;">История посещений</h1>
+</div>
+
+<div>
+    <table style="width: 100%;border-collapse: collapse;">
+        <thead style="color: black;">
+            <tr>
+                <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;">Дата и время</th>
+                <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;">Доктор</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appointment in history %}
+            <tr style="color:black;">
+                <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> {{ appointment.date }} {{ appointment.time }} </td>
+                <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> Dr. {{ appointment.doctor.get_full_name }} </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+
+{% endblock %}

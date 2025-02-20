@@ -1,0 +1,61 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Мой сайт{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'admin_panel/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_panel/css/mobile.css' %}">
+</head>
+<body style="background-color: rgb(245, 243, 241);">
+    <header class="header">
+        <div class="container">
+            <div class="header-container">
+                <div class="header-logo">
+                    <a href="/" class="header-logo-link">
+                        <img src="{% static 'admin_panel/images/logo.png' %}" alt="Clinic Logo" class="header-logo-image" width="343" height="101" loading="lazy">
+                    </a> 
+                </div>
+                
+                <div class="user-info" style="margin-left: 65%;">
+                    <div class="status-wrapper">
+                        <svg width="19" height="19" viewBox="0 0 19 19" fill="#FF8800" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="9.5" cy="9.5" r="9.5" fill="#FF8800"/>
+                        </svg>                
+                        <span id="user-status" class="span-user-status">{{user.first_name}}</span>    
+                    </div>
+                    <a id="auth-button" class="auth-output-button" href="{% url 'logout' %}">Выход</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+    <div style="display:flex; flex-wrap: nowrap; margin-left: 20px;justify-content: left; gap: 20px;">
+        <div style="display:flex;flex-direction:column;width: 25%;background-color: white;">
+                <a style="font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:dashboard' %}">Главная</a> <br>
+                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:section_list' %}">Управление разделами</a> <br>
+                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:page_list' %}">Управление страницами</a> <br>
+                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:feedback_list' %}">Отзывы</a> <br>
+                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:user_list' %}">Пользователи</a> <br>
+                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:appointment_list' %}">Приемы</a> <br>
+
+        </div>
+        <div style="display:flex; flex-direction: column; width: 80%; margin-left: 50px; margin-top: 30px;">
+            {% block content %}{% endblock %}
+        </div>
+        <div style="display:flex; flex-direction: column; width: 10%; margin-left: 50px; margin-top: 30px; height: 70px;">
+            {% block content_right %}{% endblock %}
+        </div>
+        <div style="display:flex; flex-direction: column; width: 5%; margin-left: 50px; margin-top: 30px;">
+
+        </div>
+    </div>
+    </main>
+    <footer class="text-center mt-4">
+        <p>&copy; {{ year }} Стоматологическая клиника</p>
+    </footer>
+</body>
+</html>

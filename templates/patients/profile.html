@@ -1,0 +1,24 @@
+
+
+{% extends 'base.html' %}
+{% block content %}
+
+    <h1>Профиль пользователя</h1>
+    {% if profile.avatar %}
+        <img src="{{ profile.avatar.url }}" alt="Аватар" style="width: 150px; height: 150px; border-radius: 50%;">
+    {% else %}
+        <p>Аватар не установлен</p>
+    {% endif %}
+
+    <p>Имя: {{ user.first_name }}</p>
+    <p>Фамилия: {{ user.last_name }}</p>
+    <p>Отчество: {{ user.middle_name }}</p>
+    <p>Дата рождения: {{ user.date_of_birth }}</p>
+    <p>Пол: {{ profile.get_gender_display }}</p>
+    <p>Серия паспорта: {{ profile.passport_serial }}</p>
+    <p>Номер паспорта: {{ profile.passport_number }}</p>
+    <p>Дата выдачи паспорта: {{ profile.passport_date_of_issue }}</p>
+    <p>Кем выдан: {{ profile.passport_issued_by }}</p>
+     <a href="{% url 'patient:edit_profile' %}">Изменить</a>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Редактировать профиль</h1>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ user_form.as_p }}  <!-- Форма для пользователя -->
+    {{ profile_form.as_p }}  <!-- Форма для профиля пользователя -->
+    <button type="submit">Сохранить</button>
+</form>
+{% endblock %}
+
+
+

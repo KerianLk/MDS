@@ -1,0 +1,27 @@
+{% extends "admin_panel/base.html" %}
+
+{% block content %}
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Отзыв от {{feedback.patient}}</label>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Имя: {{feedback.name}}</label>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Email:{{feedback.email}}</label>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Сообщение: {{feedback.message}}</label>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Статус: {{feedback.status|yesno:"Принят,Не принят" }}</label>
+    <label for="" style="color: #333;margin-bottom: 8px;display: block;">Дата создания: {{ feedback.created_at }}</label> 
+    <table style="width: 50%;">
+        <tr>
+            <td>
+                <a href="{% url 'admin_panel:feedback_accept' feedback.pk %}" style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: green;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">Принять</a><br>
+            </td>
+            <td>
+                <a href="{% url 'admin_panel:feedback_delete' feedback.pk %}" onclick="return confirm('Удалить отзыв?');" style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: red;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">Удалить</a>
+            </td>
+        </tr>
+    </table>
+    
+    
+
+{% endblock %}
+
+{% block content_right %}
+<a href="{% url 'admin_panel:feedback_list' %}" class="button" style="background-color: white; color: #03A50E;text-decoration: none; font-size: 15px; width: 110%; height: 150%;"><p style=" margin-top: 25%; margin-left: 15%;">Вернуться</p></a>
+{% endblock %}
