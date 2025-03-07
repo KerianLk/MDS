@@ -89,6 +89,8 @@ def edit_page(request, pk):
         if form.is_valid():
             form.save()
             return redirect("admin_panel:page_list")
+        else:
+            print(form.errors)
     else:
         form = PageForm(instance=page)
     return render(request, "admin_panel/edit_page.html", {"form": form, "page": page})
@@ -163,7 +165,7 @@ def user_edit(request, pk):
             return redirect('admin_panel:user_list')
     else:
         form = UserForm(instance=user)
-    return render(request, 'admin_panel/user_form.html', {'form': form})
+    return render(request, 'admin_panel/user_form.html', {'form': form, 'user': user})
 
 @user_passes_test(is_admin)
 def user_delete(request, pk):
