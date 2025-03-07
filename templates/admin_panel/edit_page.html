@@ -4,6 +4,15 @@
 <div style="flex-grow: 1;">
     <h1 style="margin-bottom: 20px;">Редактировать страницу: {{ page.title }}</h1>
 </div>
+{% for field in form %}
+{% if field.errors %}
+           <div class="errorlist">
+               {% for error in field.errors %}
+                   <p class="error">{{ field.label}} {{ error }}</p>
+               {% endfor %}
+           </div>
+       {% endif %}
+{% endfor %}
 <form method="post">
     {% csrf_token %}
 </br>

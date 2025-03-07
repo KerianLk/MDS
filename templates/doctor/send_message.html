@@ -8,7 +8,7 @@
 </div>
 <br>
   <div class="link-doctor-container">
-    <a href="#"  class="link-doctor active">Чат с врачом</a>
+    <a href="#"  class="link-doctor active">Чат с пациентом</a>
   </div>
   <br>
 <br>
@@ -21,14 +21,15 @@
            </div>
        {% endif %}
 {% endfor %}
+
 <div class="chat-container">
     <!-- Левая панель: выбор врача -->
     <div class="doctor-list">
-      <h2>Выберите врача</h2>
+      <h2>Выберите пациента</h2>
       <ul>
         {% for doctor in doctors %}
           <li class="doctor-item" data-doctor-id="1">
-          <a href="{% url 'patient:send_message_to_doctor' doctor.id %}" class="doctor-name link-chat active">{{ doctor.first_name }} {{ doctor.last_name }}</a>
+          <a href="{% url 'doctor:send_message_to_patient' doctor.id %}" class="doctor-name link-chat active">{{ doctor.first_name }} {{ doctor.last_name }}</a>
         </li>
         {% endfor %}
 
@@ -38,12 +39,12 @@
     <!-- Правая часть: окно чата -->
     <div class="chat-window">
       <!-- Заголовок чата -->
+
       <div class="chat-header">
         {% if current_doctor %}
-          {{ current_doctor.photo }}
-          {% if current_doctor.0.photo and current_doctor.0.photo %}
-        <img src="{{ current_doctor.0.photo.url }}" alt="{{ current_doctor.0.last_name }}Фото" class="chat-doctor-photo">
-          {% endif %}
+          {% if current_doctor.0.role == "patient" and current_doctor.0.profile.avatar %}
+        <img src="{{ current_doctor.0.profile.avatar.url }}" alt="{{ current_doctor.0.last_name }}Фото" class="chat-doctor-photo">
+          {% endif%}
         {% endif %}
         <span class="chat-doctor-name">{{ current_doctor.0.first_name }} {{ current_doctor.0.last_name }}</span>
       </div>
@@ -84,32 +85,10 @@
 </div>
 
 <div class="right-block">
-    <a href="{% url 'patient:view_appointments' %}" class="back-button">
+    <a href="{% url 'doctor:view_appointments' %}" class="back-button">
         назад ->
     </a>
-    <div style="background-color: white;width: 270px; height: 80px;padding: 10px;">
-    <a href="{% url 'patient:book_appointment' %}" class="button-patient-orange-first">
-        Записаться онлайн
-        <span class="star">★</span>
-    </a>
-</div>
-<div style="background-color: white;width: 310px; height: 100px;padding: 20px;margin-left: -20px;margin-top: 20px;">
-    <a href="{% url 'patient:order_call' %}" class="button-patient-orange-second">
-        Записаться по телефону
-    </a> 
-</div>
-<div style="background-color: #A2856461;width: 270px; height: 80px;padding: 10px;margin-top: 20px;">
-    <a href="{% url 'patient:feedback' %}" class="button-patient-orange-third">
-        Оставить отзыв
-        <span class="star">★</span>
-    </a>
-</div>
-<div style="margin-top: 20px;">
-    <a href="#" class="button-patient-orange-third">
-        Написать врачу
-        <span class="star">★</span>
-    </a> 
-</div>
+
 </div>
 </div>
 

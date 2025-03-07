@@ -1,9 +1,74 @@
 {% extends 'base.html' %}
-{% block content %}
-<h1>Запись на прием</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Записаться</button>
-</form>
+{% block page %}
+<div class="appointment-container">
+    <div class="left-block">
+      {% for field in form %}
+      {% if field.errors %}
+                 <div class="errorlist">
+                     {% for error in field.errors %}
+                         <p class="error">{{ field.label}} {{ error }}</p>
+                     {% endfor %}
+                 </div>
+             {% endif %}
+     {% endfor %}
+        <div class="right-block">
+            {% if user.role == "doctor" %}
+            <a href="{% url 'doctor:view_appointments' %}" class="custom-button-link">
+                Записи
+                <span class="star">★</span>
+            </a>
+            {% else %}
+            <a href="{% url 'patient:view_appointments' %}" class="back-button">
+                назад ->
+            </a>
+            {% endif %}
+        </div>
+    <div class="appointment-form">
+      <h2 class="book-label">Форма обратной связи</h2>
+      <form method="POST">
+        {% csrf_token %}
+
+        <!-- Поле для выбора врача -->
+        <div class="form-group">
+
+            <input type="text" name="name" maxlength="255" required="" id="id_name" class="input-field" placeholder="Ваше имя">
+            <br>
+
+        </div>
+        <!-- Поле для выбора даты -->
+        <div class="form-group">
+
+            <input type="text" name="number" maxlength="255" required="" id="id_number" class="input-field" placeholder="Ваш телефон">
+        </div>
+
+        <div class="form-group">
+
+            <input type="text" name="email" maxlength="255" required="" id="id_email" class="input-field" placeholder="Ваш E-Mail">
+            <br>
+
+        </div>
+
+        <div class="form-group">
+
+            <textarea name="message" cols="40" rows="10" required="" id="id_message" class="input-field" placeholder="Ваше сообщение"></textarea>
+            <br>
+
+        </div>
+
+        <div class="form-group">
+            <label class="checkbox-label">
+              <input type="checkbox" name="soglasie" maxlength="255" required="" id="id_soglasie" class="checkbox-input">
+              <span class="checkbox-custom"></span>
+              Я согласен(на) на обработку персональных данных
+            </label>
+          </div>
+
+        <!-- Кнопка отправки формы -->
+        <div class="form-group">
+          <button type="submit" class="submit-button">Записаться</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 {% endblock %}

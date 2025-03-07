@@ -1,6 +1,15 @@
 {% extends 'base.html' %}
-{% block content %}
+{% block page %}
 <h1>Редактировать запись на прием</h1>
+{% for field in form %}
+{% if field.errors %}
+           <div class="errorlist">
+               {% for error in field.errors %}
+                   <p class="error">{{ field.label}} {{ error }}</p>
+               {% endfor %}
+           </div>
+       {% endif %}
+{% endfor %}
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

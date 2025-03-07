@@ -14,7 +14,7 @@
         <div class="container">
             <div class="header-container">
                 <div class="header-logo">
-                    <a href="/" class="header-logo-link">
+                    <a href="{% url 'admin_panel:dashboard' %}" class="header-logo-link">
                         <img src="{% static 'admin_panel/images/logo.png' %}" alt="Clinic Logo" class="header-logo-image" width="343" height="101" loading="lazy">
                     </a> 
                 </div>
@@ -26,7 +26,7 @@
                         </svg>                
                         <span id="user-status" class="span-user-status">{{user.first_name}}</span>    
                     </div>
-                    <a id="auth-button" class="auth-output-button" href="{% url 'logout' %}">Выход</button>
+                    <a id="auth-button" class="auth-output-button" href="{% url 'logout' %}">Выход</a>
                 </div>
             </div>
         </div>
@@ -54,4 +54,28 @@
     </div>
     </main>
 </body>
+<script>
+    // Управление основным меню
+document.querySelector('.header-menu-toggle').addEventListener('click', function() {
+  this.classList.toggle('active');
+  document.querySelector('.header-menu-list').classList.toggle('active');
+});
+
+// Управление подменю
+document.querySelectorAll('.header-menu-submenu-link').forEach(function(link) {
+  link.addEventListener('click', function(event) {
+    event.preventDefault(); // Предотвращаем переход по ссылке
+    const submenu = this.nextElementSibling; // Находим подменю
+    if (submenu && submenu.classList.contains('header-submenu-list')) {
+      submenu.classList.toggle('active'); // Переключаем видимость подменю
+      // Меняем стрелочку
+      if (submenu.classList.contains('active')) {
+        this.innerHTML = this.innerHTML.replace('▶', '▼'); // Меняем на ▼
+      } else {
+        this.innerHTML = this.innerHTML.replace('▼', '▶'); // Возвращаем ▶
+      }
+    }
+  });
+});
+</script> 
 </html>

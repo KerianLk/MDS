@@ -1,7 +1,19 @@
 {% extends 'base.html' %}
-{% block content %}
+{% block page %}
+<div class="containers">
+    <div class="left-block">
 <div style="flex-grow: 1;">
     <h1 style="margin-bottom: 20px;">История посещений</h1>
+</div>
+</div>
+<div class="right-block">
+    {% if user.role == "doctor" %}
+    <a href="{% url 'doctor:view_appointments' %}" class="custom-button-link">
+        Записи
+        <span class="star">★</span>
+    </a>
+    {% endif %}
+</div>
 </div>
 
 <div>

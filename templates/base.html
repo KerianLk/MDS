@@ -1,161 +1,459 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--
-<body>
-    <header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    {% for section in sections %}
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="{% url 'main:section_detail' section.slug %}" id="navbarDropdown-{{ section.id }}" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {{ section.name }}
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown-{{ section.id }}">
-              {% for page in pages %}
-              {% if page.section_id == section.id %}
-                  <li><a class="dropdown-item" href="{% url 'main:page_detail' section.slug page.slug %}">{{ page.title }}</a></li>
-               {% endif %}
-              {% endfor %}
-          </ul>
-                    </li>
-                    {% endfor %}
-        </ul>
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-      <form class="d-flex">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form>
-        </ul>
-      <ul class="d-flex">
-         {% if user.is_authenticated %}
-                    <a href="{% url 'main:lk' %}">Личный кабинет</a>
-                    <a href="{% url 'logout' %}">Выйти</a>
-                {% else %}
-                    <a href="{% url 'login' %}">Войти</a>
-                    <a href="{% url 'register' %}">Регистрация</a>
-                {% endif %}
-      </ul>
-    </div>
-  </div>
-</nav>
-
-
-    <main class="container mt-4">
-        {% block contents %}
-        {% endblock %}
-    </main>
-
-    <footer class="text-center mt-4">
-        <p>&copy; {{ year }} Стоматологическая клиника</p>
-    </footer>
-    </header>
-</body>
-</html>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
-
--->
-
-
-
-
-
 {% load static %}
+{% if request.user.is_authenticated %}
+    {% if request.user.role == "admin" %}
+        {% include 'admin_panel/base.html' %}
+    {% else %}
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="{% static 'admin_panel/css/styles.css' %}">
+            <link rel="stylesheet" href="{% static 'admin_panel/css/mobile.css' %}">
+            <title>Панель администратора</title>
+        </head>
+        <body style="background-color: rgb(245, 243, 241);">
+            <header class="header">
+                <div class="container">
+                    <div class="header-container">
+                        <div class="header-logo">
+                            <a href="{% if user.is_authenticated %}{% url 'main:lk' %}{% else %}/{% endif %}" class="header-logo-link">
+                                <img src="{% static 'admin_panel/images/logo.png' %}" alt="Clinic Logo" class="header-logo-image" width="343" height="101" loading="lazy">
+                            </a> 
+                        </div>
+                        
+                        <div class="user-info" style="margin-left: 65%;">
+                            <div class="status-wrapper">
+                                <svg width="19" height="19" viewBox="0 0 19 19" fill="#FF8800" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="9.5" cy="9.5" r="9.5" fill="#FF8800"/>
+                                </svg>                
+                                <span id="user-status" class="span-user-status">{{user.first_name}}</span>    
+                            </div>
+                            <a id="auth-button" class="auth-output-button" href="{% url 'logout' %}">Выход</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <main class="home">
+                {% block page %}{% endblock %}
+            </main>
+            <script>
+                // Управление основным меню
+            document.querySelector('.header-menu-toggle').addEventListener('click', function() {
+              this.classList.toggle('active');
+              document.querySelector('.header-menu-list').classList.toggle('active');
+            });
+        
+            // Управление подменю
+            document.querySelectorAll('.header-menu-submenu-link').forEach(function(link) {
+              link.addEventListener('click', function(event) {
+                event.preventDefault(); // Предотвращаем переход по ссылке
+                const submenu = this.nextElementSibling; // Находим подменю
+                if (submenu && submenu.classList.contains('header-submenu-list')) {
+                  submenu.classList.toggle('active'); // Переключаем видимость подменю
+                  // Меняем стрелочку
+                  if (submenu.classList.contains('active')) {
+                    this.innerHTML = this.innerHTML.replace('▶', '▼'); // Меняем на ▼
+                  } else {
+                    this.innerHTML = this.innerHTML.replace('▼', '▶'); // Возвращаем ▶
+                  }
+                }
+              });
+            });
+        </script> 
+        </body>
+    {% endif %}
+{% else %}
 
-<!DOCTYPE html>
-<html lang="en">
 <head>
     <title>{% block title %}Мой сайт{% endblock %}</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{% static 'admin_panel/css/styles.css' %}">
-    <link rel="stylesheet" href="{% static 'admin_panel/css/mobile.css' %}">
+    <link rel="stylesheet" href="{% static 'doctor/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'doctor/css/mobile.css' %}">
 </head>
 <body style="background-color: FFF3E5;">
     <header class="header">
         <div class="container">
             <div class="header-container">
                 <div class="header-logo">
-                    <a href="/" class="header-logo-link">
+                    <a href="{% url 'dashboard' %}" class="header-logo-link">
                         <img src="{% static 'admin_panel/images/logo.png' %}" alt="Clinic Logo" class="header-logo-image" width="343" height="101" loading="lazy">
                     </a> 
                 </div>
-                
-                <div class="user-info" style="margin-left: 65%;">
+
+                <!-- Блок header-menu-search должен быть доступен всем -->
+                <div class="header-menu-search">
+                    <div class="header-search">
+                        <input type="text" class="header-search-input">
+                        <button class="header-button-loupe">
+                            <svg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="8" cy="8" r="7.5" fill="white" stroke="currentColor" />
+                                <path d="M17.9393 20.0607C18.5251 20.6464 19.4749 20.6464 20.0607 20.0607C20.6464 19.4749 20.6464 18.5251 20.0607 17.9393L17.9393 20.0607ZM11.9393 14.0607L17.9393 20.0607L20.0607 17.9393L14.0607 11.9393L11.9393 14.0607Z" fill="currentColor" />
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="header-menu-toggle" aria-label="Открыть меню">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button> 
+                    <nav class="header-menu">
+                        <ul class="header-menu-list">
+                            <li class="header-menu-item">
+                                <a href="javascript:void(0);" class="header-menu-submenu-link">О клинике</a>
+                                <ul class="header-submenu-list">
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/about/description" class="header-submenu-link">Описание</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/about/licenses" class="header-submenu-link">Лицензии и нормативная<br/>документация</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/about/specialists" class="header-submenu-link">Специалисты</a>
+                                    </li>                        
+                                </ul>
+                            </li>
+                            <li class="header-menu-item">
+                                <a href="javascript:void(0);" class="header-menu-submenu-link">Услуги</a>
+                                <ul class="header-submenu-list">
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/x-ray" class="header-submenu-link">Рентгенография</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/anesthesia" class="header-submenu-link">Анестезия</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/prof_hygiene" class="header-submenu-link">Профессиональная гигиена</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/dentistry" class="header-submenu-link">Лечение зубов</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/dental_prost" class="header-submenu-link">Протезирование зубов</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/tooth_extraction" class="header-submenu-link">Удаление зубов</a>
+                                    </li> 
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/operations" class="header-submenu-link">Хирургическое лечение и операции</a>
+                                    </li> 
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/implantation" class="header-submenu-link">Имплантация зубов</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/gum_treatment" class="header-submenu-link">Лечение десен</a>
+                                    </li>                         
+                                </ul>
+                            </li>
+                            <li class="header-menu-item">
+                                <a href="http://127.0.0.1:8000/website/price" class="header-menu-link">Цены</a>
+                            </li>
+                            <li class="header-menu-item">
+                                <a href="http://127.0.0.1:8000/website/blogg" class="header-menu-link">Блог</a>
+                            </li>
+                            <li class="header-menu-item">
+                                <a href="http://127.0.0.1:8000/website/stockss" class="header-menu-link">Акции</a>
+                            </li>
+                            <li class="header-menu-item">
+                                <a href="http://127.0.0.1:8000/website/reviewss" class="header-menu-link">Отзывы</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Блок user-info меняется в зависимости от авторизации -->
+                <div class="user-info">
                     <div class="status-wrapper">
-                      {% if user.is_authenticated %}
                         <svg width="19" height="19" viewBox="0 0 19 19" fill="#FF8800" xmlns="http://www.w3.org/2000/svg">
                             <circle cx="9.5" cy="9.5" r="9.5" fill="#FF8800"/>
                         </svg>                
-                        <span id="user-status" class="span-user-status">{{user.first_name}}</span>    
-                        
+                        <span id="user-status" class="span-user-status">
+                            {% if user.is_authenticated %}
+                                {{ user.first_name }}
+                            {% else %}
+                                Гость
+                            {% endif %}
+                        </span>    
                     </div>
-                    <a id="auth-button" class="auth-output-button" href="{% url 'logout' %}">Выход</button>
-                      {% else %}
-                    </div>
-                      {% endif %}
-                    
+                    {% if user.is_authenticated %}
+                        <a id="auth-button" class="auth-output-button" href="{% url 'logout' %}">Выход</a>
+                    {% else %}
+                        <div class="auth-buttons">
+                            <a class="auth-button" href="{% url 'login' %}">Вход</a>
+                            <span class="separator">/</span>
+                            <a class="auth-button" href="{% url 'register' %}">Регистрация</a>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </header>
-    <main>
-    <div style="display:flex; flex-wrap: nowrap; margin-left: 20px;justify-content: left; gap: 20px;">
-        <div style="display:flex;flex-direction:column;width: 25%;background-color: white;">
-                <!--<a style="font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:dashboard' %}">Главная</a> <br>
-                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:section_list' %}">Управление разделами</a> <br>
-                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:page_list' %}">Управление страницами</a> <br>
-                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:feedback_list' %}">Отзывы</a> <br>
-                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:user_list' %}">Пользователи</a> <br>
-                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'admin_panel:appointment_list' %}">Приемы</a> <br>
-                -->
+    {# Проверяем текущий URL #}
+    {% url 'login' as login_url %}
+    {% url 'register' as register_url %}
 
-                {% if user.role == 'doctor' %}
-                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'doctor:dashboard' %}">Главная</a> <br>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'doctor:book_appointment' %}">Записаться на прием</a> <br>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'doctor:view_appointments' %}">Предстоящие записи</a> <br>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'doctor:send_message' %}">Отправить сообщение</a> <br>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'doctor:inbox' %}">Сообщения</a> <br>
-                {% elif user.role == 'patient' %}
-                <a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:dashboard' %}">Главная</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:profile' %}">Профиль</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:patient_survey' %}">Анкета</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:medical_consent' %}">Согласие на мед. вмешательство</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:book_appointment' %}">Записаться на прием</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:order_call' %}">Записаться по телефону</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:view_appointments' %}">Предстоящие записи</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:view_history' %}">История посещений</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:researches' %}">Исследования и снимки</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:send_message' %}">Отправить сообщение</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:inbox' %}">Сообщения</a>
-<a style="margin-top: 10px; font-size: 20px; color: #A28564;text-decoration: none;" href="{% url 'patient:feedback' %}">Оставить отзыв</a>
-                  {% block left%}
-                  {% endblock %}
-                {% endif %}
-                
-
-        </div>
-        <div style="display:flex; flex-direction: column; width: 100%; margin-left: 50px; margin-top: 30px;">
+    {% if request.path == login_url or request.path == register_url %}
+        {# Показываем блок контента для форм #}
+        <main class="auth-content">
             {% block content %}{% endblock %}
-        </div>
-<!--        <div style="display:flex; flex-direction: column; width: 10%; margin-left: 50px; margin-top: 30px; height: 70px;">
-            {% block content_right %}{% endblock %}
-        </div>
-        -->
-        <div style="display:flex; flex-direction: column; width: 5%; margin-left: 50px; margin-top: 30px;">
-
-        </div>
-    </div>
-    </main>
-    <footer class="text-center mt-4">
-        <!--<p>&copy; {{ year }} Стоматологическая клиника</p>-->
+        </main>
+        <script>
+            // Управление основным меню
+        document.querySelector('.header-menu-toggle').addEventListener('click', function() {
+          this.classList.toggle('active');
+          document.querySelector('.header-menu-list').classList.toggle('active');
+        });
+    
+        // Управление подменю
+        document.querySelectorAll('.header-menu-submenu-link').forEach(function(link) {
+          link.addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем переход по ссылке
+            const submenu = this.nextElementSibling; // Находим подменю
+            if (submenu && submenu.classList.contains('header-submenu-list')) {
+              submenu.classList.toggle('active'); // Переключаем видимость подменю
+              // Меняем стрелочку
+              if (submenu.classList.contains('active')) {
+                this.innerHTML = this.innerHTML.replace('▶', '▼'); // Меняем на ▼
+              } else {
+                this.innerHTML = this.innerHTML.replace('▼', '▶'); // Возвращаем ▶
+              }
+            }
+          });
+        });
+    </script> 
+    {% else %}
+        {# Показываем обычный main для гостей #}
+        <main class="home">
+            <div class="container">
+                <div class="call-wrapper">
+                    <div class="call">
+                        <div class="call-consultation">
+                            <p class="p-consultation">Получите бесплатную<br>консультацию у высококвалифицированного пародонтолога.</p>
+                        </div>
+                        <button class="button-call">Заказать звонок</button>
+                        <div class="widerange">
+                            <p class="p-widerange">Широкий спекmр сmомаmологических услуг</p>
+                        </div>
+                    </div>
+                    <div class="arrow-why-us">
+                        <img src="http://127.0.0.1:8000/static/admin_panel/images/arrow-one.png" alt="arrow-one">
+                    </div>
+                    <button class="button-why-us">Почему мы?</button>
+                </div>
+                <div class="directions-wrapper">
+                    <p class="p-directions"><span class="span1-directions">В нашей клинике представлены </span><span class="span2-directions">все основные направления стоматологии</span></p>
+                    <div class="center-slider">
+                        <div class="slider">
+                            <div class="slider-track">
+                                <div class="slide">
+                                    <img src="http://127.0.0.1:8000/static/admin_panel/images/professional_hygiene.jpg" alt="Photo 1">
+                                    <p class="p-name-service">Профессиональная гигиена</p>
+                                </div>
+                                <div class="slide">
+                                    <img src="http://127.0.0.1:8000/static/admin_panel/images/anesthesia.jpg" alt="Photo 2">
+                                    <p class="p-name-service">Анестезия</p>
+                                </div>
+                                <div class="slide">
+                                    <img src="http://127.0.0.1:8000/static/admin_panel/images/dentistry.jpg" alt="Photo 3">
+                                    <p class="p-name-service">Лечение зубов</p>
+                                </div>
+                                <div class="slide">
+                                    <img src="http://127.0.0.1:8000/static/admin_panel/images/gum_treatment.jpg" alt="Photo 4">
+                                    <p class="p-name-service">Лечение десен</p>
+                                </div>
+                                <div class="slide">
+                                    <img src="http://127.0.0.1:8000/static/admin_panel/images/x-ray.jpg" alt="Photo 5">
+                                    <p class="p-name-service">Рентгенография</p>
+                                </div>
+                                <div class="slide">
+                                    <img src="http://127.0.0.1:8000/static/admin_panel/images/prosthetics.jpg" alt="Photo 6">
+                                    <p class="p-name-service">Протезирование</p>
+                                </div>
+                                <div class="slide">
+                                    <img src="http://127.0.0.1:8000/static/admin_panel/images/tooth_extraction.jpg" alt="Photo 7">
+                                    <p class="p-name-service">Удаление зубов</p>
+                                </div>
+                                <div class="slide">
+                                    <img src="http://127.0.0.1:8000/static/admin_panel/images/surgical_treatment.jpg" alt="Photo 8">
+                                    <p class="p-name-service">Хирургическое лечение и операции</p>
+                                </div>
+                                <div class="slide">
+                                    <img src="http://127.0.0.1:8000/static/admin_panel/images/implantation.jpg" alt="Photo 9">
+                                    <p class="p-name-service">Имплантация</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="all-services">
+                        <p class="p-all-services">
+                            Вы можете ознакомиться с перечнем услуг, их<br>описанием и ценами прямо сейчас 
+                        </p>
+                        <button class="button-all-services">Все услуги</button>
+                    </div>
+                    <div class="arrow-all-services">
+                        <img src="http://127.0.0.1:8000/static/admin_panel/images/arrow-all-services.png" alt="arrow-two">
+                    </div>
+                    <p class="p-advantages">Стоматология <span class="span-advantages"> Дента-МДС</span> и ее преимущества:</p>
+                </div>
+                <div class="cells-advantage">
+                    <div class="advantage-card">
+                        <img src="http://127.0.0.1:8000/static/admin_panel/images/tooth_book.png" alt="icon4" class="advantage-icon">
+                        <h3 class="advantage-title">Бесплатная консультация</h3>
+                        <p class="advantage-description">Бесплатный осмотр и консультация с составлением плана лечения.</p>
+                    </div>
+                    <div class="advantage-card">
+                        <img src="http://127.0.0.1:8000/static/admin_panel/images/plus_tooth.png" alt="icon5" class="advantage-icon">
+                        <h3 class="advantage-title">Широкий спектр услуг</h3>
+                        <p class="advantage-description">Возможность имплантации зубов, установки съемных и несъемных протезов любой сложности, коронок и виниров, хирургическое лечение.</p>
+                    </div>
+                    <div class="advantage-card">
+                        <img src="http://127.0.0.1:8000/static/admin_panel/images/tooth_nike.png" alt="icon6" class="advantage-icon">
+                        <h3 class="advantage-title">Профессионализм</h3>
+                        <p class="advantage-description">Команда дипломированных врачей с многолетним опытом работы.</p>
+                    </div>
+                    <div class="advantage-card">
+                        <img src="http://127.0.0.1:8000/static/admin_panel/images/star_tooth.png" alt="icon7" class="advantage-icon">
+                        <h3 class="advantage-title">Современное оборудование</h3>
+                        <p class="advantage-description">Все клиники оснащены современным медицинским и диагностическим оборудованием мировых производителей.</p>
+                    </div>
+                    <div class="advantage-card">
+                        <img src="http://127.0.0.1:8000/static/admin_panel/images/p_coin.png" alt="icon8" class="advantage-icon">
+                        <h3 class="advantage-title">Скидки</h3>
+                        <p class="advantage-description">Индивидуальный подход к каждому пациенту с гибкой системой цен и скидок.</p>
+                    </div>
+                    <div class="working-hours">
+                        <h3 class="working-hours-title">ЧАСЫ РАБОТЫ</h3>
+                        <p class="working-hours-description-one">Понедельник - пятница<br>9.00 - 20.00</p>
+                        <p class="working-hours-description-two">Суббота - воскресенье<br>выходной</p>
+                    </div>
+                    <div class="advantage-card">
+                        <img src="http://127.0.0.1:8000/static/admin_panel/images/loupe_star.png" alt="icon9" class="advantage-icon">
+                        <h3 class="advantage-title">Диагностика</h3>
+                        <p class="advantage-description">Рентгенологическое исследование прямо на месте.</p>
+                    </div>
+                    <div class="advantage-card">
+                        <img src="http://127.0.0.1:8000/static/admin_panel/images/tooth_with_stripes.png" alt="icon10" class="advantage-icon">
+                        <h3 class="advantage-title">Зуботехническая лаборатория</h3>
+                        <p class="advantage-description">Наличие собственной зуботехнической лаборатории с многолетней историей и опытными специалистами.</p>
+                    </div>
+                </div>
+                <div class="contacts-map">
+                    <div class="mapping">
+                        <div id="map" style="width: 100%; height: 489px;"></div>
+                        <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+                        <script type="text/javascript">
+                            ymaps.ready(function () {
+                                var myMap = new ymaps.Map("map", {
+                                    center: [55.756589, 37.757376], // Координаты центра карты
+                                    zoom: 15,
+                                    controls: []
+                                });
+                                var myPlacemark = new ymaps.Placemark([55.756589, 37.757376], {
+                                    hintContent: 'Клиника Дента-МДС',
+                                    balloonContent: 'Клиника «Дента-МДС»<br>111123 г. Москва<br>ул. Плеханова д2/46 стр. 5'
+                                }, {
+                                    // Стилизация метки
+                                    iconColor: '#FF6600'  // Темно-оранжевый цвет для метки
+                                });
+                    
+                                // Добавляем метку на карту
+                                myMap.geoObjects.add(myPlacemark);
+                            
+                                // Убираем ненужные элементы управления
+                                myMap.controls.remove('zoomControl');  // Убираем масштаб
+                                myMap.controls.remove('geolocationControl');  // Убираем геолокацию
+                                myMap.controls.remove('trafficControl');  // Убираем трафик
+                                myMap.controls.remove('routePanelControl');  // Убираем панель маршрута
+                                myMap.controls.remove('searchControl');  // Убираем поиск
+                                myMap.controls.remove('typeSelector');  // Убираем тип карты
+                                myMap.controls.remove('mapTools');  // Убираем дополнительные инструменты
+                            });
+                        </script>
+                        <button id="custom-button" class="button-open-map" onclick="window.open('https://yandex.eu/maps/213/moscow/?from=mapframe&ll=37.757376%2C55.756589&mode=usermaps&source=mapframe&um=constructor%3Adce9c20b2fbf4e44bd3baa9381aea6e799daca57a12f6e19000350256147797f&utm_source=mapframe&z=16', '_blank')">Открыть карту</button>
+                    </div>
+                    <div class="contacts">
+                        <p class="p-contacts">Контакты</p>
+                        <p class="p-name-clinic">ООО «Клиника «Дента-МДС»</p>
+                        <div class="address">
+                            <img src="http://127.0.0.1:8000/static/admin_panel/icons/mark.png" alt="mark" class="img-address">
+                            <p class="p-address">ул. Плеханова д2/46 стр. 5<br>город Москва</p>
+                        </div>
+                        <div class="numbers">
+                            <img src="http://127.0.0.1:8000/static/admin_panel/icons/phone.png" alt="phone" class="img-numbers">
+                            <p class="p-numbers">Клиника:<br>+7 (495) 975-77-90<br>+7 (926) 444-03-10<br>Лаборатория:<br>+7 (495) 649-97-97</p>
+                        </div>
+                        <div class="email">
+                            <img src="http://127.0.0.1:8000/static/admin_panel/icons/writing.png" alt="writing" class="img-email">
+                            <p class="p-email">
+                                denta-mds@mail.ru
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script>
+            // Управление основным меню
+        document.querySelector('.header-menu-toggle').addEventListener('click', function() {
+          this.classList.toggle('active');
+          document.querySelector('.header-menu-list').classList.toggle('active');
+        });
+    
+        // Управление подменю
+        document.querySelectorAll('.header-menu-submenu-link').forEach(function(link) {
+          link.addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем переход по ссылке
+            const submenu = this.nextElementSibling; // Находим подменю
+            if (submenu && submenu.classList.contains('header-submenu-list')) {
+              submenu.classList.toggle('active'); // Переключаем видимость подменю
+              // Меняем стрелочку
+              if (submenu.classList.contains('active')) {
+                this.innerHTML = this.innerHTML.replace('▶', '▼'); // Меняем на ▼
+              } else {
+                this.innerHTML = this.innerHTML.replace('▼', '▶'); // Возвращаем ▶
+              }
+            }
+          });
+        });
+    </script> 
+    {% endif %}
+{% endif %}
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="{% static 'doctor/images/logo.png' %}" alt="footer-img" class="img-footer">
+              <p>© 2024 Denta-mds - стоматологическая клиника.<br>Все права защищены.<br>Политика конфиденциальности</p>
+            </div>
+            <div class="footer-menu">
+                <ul>
+                     <li><a href="http://127.0.0.1:8000/about/description/">О клинике</a></li>
+                    <li><a href="http://127.0.0.1:8000/services/x-ray">Услуги</a></li>
+                    <li><a href="http://127.0.0.1:8000/website/price">Цены</a></li>
+                </ul>
+                <ul>
+                    <li><a href="http://127.0.0.1:8000/website/blogg">Блог</a></li>
+                    <li><a href="http://127.0.0.1:8000/website/reviewss">Отзывы</a></li>
+                </ul>
+            </div>
+            <div class="footer-subscribe">
+                <div class="footer-socials">
+                    <p>Рассылка<br>Подписаться на рассылку:</p>
+                    <div class="img-socials">
+                        <a href="#"><img src="{% static 'doctor/images/telega.png' %}" alt="Telegram"></a>
+                        <a href="#"><img src="{% static 'doctor/images/whatsapp.png' %}" alt="WhatsApp"></a>
+                    </div>
+                </div>
+                <form action="#">
+                    <input type="email" placeholder="Email address..." required>
+                    <button type="submit">Подписаться</button>
+                </form>
+                <label class="consent-label">
+                    <input type="checkbox" required/>
+                    Я даю согласие на обработку моих персональных данных
+                </label>
+            </div>
+          </div>
     </footer>
 </body>
 </html>

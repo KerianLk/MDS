@@ -1,0 +1,168 @@
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}Мой сайт{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'admin_panel/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'admin_panel/css/mobile.css' %}">
+</head>
+<body style="background-color: rgb(245, 243, 241);">
+    <header class="header">
+        <div class="container">
+            <div class="header-container">
+                <div class="header-logo">
+                    <a href="{% url 'dashboard' %}" class="header-logo-link">
+                        <img src="{% static 'admin_panel/images/logo.png' %}" alt="Clinic Logo" class="header-logo-image" width="343" height="101" loading="lazy">
+                    </a> 
+                </div>
+
+                <!-- Блок header-menu-search должен быть доступен всем -->
+                <div class="header-menu-search">
+                    <div class="header-search">
+                        <input type="text" class="header-search-input">
+                        <button class="header-button-loupe">
+                            <svg width="21" height="21" viewBox="0 0 21 21" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="8" cy="8" r="7.5" fill="white" stroke="currentColor" />
+                                <path d="M17.9393 20.0607C18.5251 20.6464 19.4749 20.6464 20.0607 20.0607C20.6464 19.4749 20.6464 18.5251 20.0607 17.9393L17.9393 20.0607ZM11.9393 14.0607L17.9393 20.0607L20.0607 17.9393L14.0607 11.9393L11.9393 14.0607Z" fill="currentColor" />
+                            </svg>
+                        </button>
+                    </div>
+                    <button class="header-menu-toggle" aria-label="Открыть меню">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button> 
+                    <nav class="header-menu">
+                        <ul class="header-menu-list">
+                            <li class="header-menu-item">
+                                <a href="javascript:void(0);" class="header-menu-submenu-link">О клинике</a>
+                                <ul class="header-submenu-list">
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/about/description" class="header-submenu-link">Описание</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/about/licenses" class="header-submenu-link">Лицензии и нормативная<br/>документация</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/about/specialists" class="header-submenu-link">Специалисты</a>
+                                    </li>                        
+                                </ul>
+                            </li>
+                            <li class="header-menu-item">
+                                <a href="javascript:void(0);" class="header-menu-submenu-link">Услуги</a>
+                                <ul class="header-submenu-list">
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/x-ray" class="header-submenu-link">Рентгенография</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/anesthesia" class="header-submenu-link">Анестезия</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/prof_hygiene" class="header-submenu-link">Профессиональная гигиена</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/dentistry" class="header-submenu-link">Лечение зубов</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/dental_prost" class="header-submenu-link">Протезирование зубов</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/tooth_extraction" class="header-submenu-link">Удаление зубов</a>
+                                    </li> 
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/operations" class="header-submenu-link">Хирургическое лечение и операции</a>
+                                    </li> 
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/implantation" class="header-submenu-link">Имплантация зубов</a>
+                                    </li>
+                                    <li class="header-submenu-item">
+                                        <a href="http://127.0.0.1:8000/services/gum_treatment" class="header-submenu-link">Лечение десен</a>
+                                    </li>                         
+                                </ul>
+                            </li>
+                            <li class="header-menu-item">
+                                <a href="http://127.0.0.1:8000/website/price" class="header-menu-link">Цены</a>
+                            </li>
+                            <li class="header-menu-item">
+                                <a href="http://127.0.0.1:8000/website/blogg" class="header-menu-link">Блог</a>
+                            </li>
+                            <li class="header-menu-item">
+                                <a href="http://127.0.0.1:8000/website/stockss" class="header-menu-link">Акции</a>
+                            </li>
+                            <li class="header-menu-item">
+                                <a href="http://127.0.0.1:8000/website/reviewss" class="header-menu-link">Отзывы</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Блок user-info меняется в зависимости от авторизации -->
+                <div class="user-info">
+                    <div class="status-wrapper">
+                        <svg width="19" height="19" viewBox="0 0 19 19" fill="#FF8800" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="9.5" cy="9.5" r="9.5" fill="#FF8800"/>
+                        </svg>                
+                        <span id="user-status" class="span-user-status">
+                            {% if user.is_authenticated %}
+                                {{ user.first_name }}
+                            {% else %}
+                                Гость
+                            {% endif %}
+                        </span>    
+                    </div>
+                    {% if user.is_authenticated %}
+                        <a id="auth-button" class="auth-output-button" href="{% url 'logout' %}">Выход</a>
+                    {% else %}
+                        <div class="auth-buttons">
+                            <a class="auth-button" href="{% url 'login' %}">Вход</a>
+                            <span class="separator">/</span>
+                            <a class="auth-button" href="{% url 'register' %}">Регистрация</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </header>
+    {% block content %}{% endblock %}
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="{% static 'doctor/images/logo.png' %}" alt="footer-img" class="img-footer">
+              <p>© 2024 Denta-mds - стоматологическая клиника.<br>Все права защищены.<br>Политика конфиденциальности</p>
+            </div>
+            <div class="footer-menu">
+                <ul>
+                    <li><a href="/">О клинике</a></li>
+                    <li><a href="http://127.0.0.1:8000/services/x-ray">Услуги</a></li>
+                    <li><a href="http://127.0.0.1:8000/website/price">Цены</a></li>
+                </ul>
+                <ul>
+                    <li><a href="http://127.0.0.1:8000/website/blogg">Блог</a></li>
+                    <li><a href="http://127.0.0.1:8000/website/reviewss">Отзывы</a></li>
+                </ul>
+            </div>
+            <div class="footer-subscribe">
+                <div class="footer-socials">
+                    <p>Рассылка<br>Подписаться на рассылку:</p>
+                    <div class="img-socials">
+                        <a href="#"><img src="{% static 'doctor/images/telega.png' %}" alt="Telegram"></a>
+                        <a href="#"><img src="{% static 'doctor/images/whatsapp.png' %}" alt="WhatsApp"></a>
+                    </div>
+                </div>
+                <form action="#">
+                    <input type="email" placeholder="Email address..." required>
+                    <button type="submit">Подписаться</button>
+                </form>
+                <label class="consent-label">
+                    <input type="checkbox" required/>
+                    Я даю согласие на обработку моих персональных данных
+                </label>
+            </div>
+          </div>
+    </footer>
+</body>
+</html>

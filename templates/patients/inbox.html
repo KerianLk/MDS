@@ -1,8 +1,37 @@
 {% extends 'base.html' %}
-{% block content %}
+{% block page %}
 
+<div class="containers">
+    <div class="left-block">
 <div style="flex-grow: 1;">
     <h1 style="margin-bottom: 20px;">Мои сообщения</h1>
+</div>
+<div>
+    Дата: 
+    <input type="date" id="date_filter" class="date-input"  maxlength="255" required="" id="id_date">
+</div>
+<div>
+Сортировать: 
+<select id="sortSelect" onchange="sortTable()" style="-webkit-appearance: none;-moz-appearance: none;appearance: none;width: 300px;padding: 10px;border:none; background-color: #FFF3E5;color: #333;font-size: 16px;cursor: pointer;transition: border-color 0.3s ease;">
+    <option value="name_asc" style="padding: 10px;">по имени (по возрастанию)</option> |
+    <option value="name_desc" style="padding: 10px;">по имени (по убыванию)</option> |
+    <option value="date_added_asc" style="padding: 10px;">по дате добавления (по возрастанию)</option> |
+    <option value="date_added_desc" style="padding: 10px;">по дате добавления (по убыванию)</option>
+</select>
+</div>
+</div>
+<div class="right-block">
+    {% if user.role == "doctor" %}
+    <a href="{% url 'doctor:view_appointments' %}" class="custom-button-link">
+        Записи
+        <span class="star">★</span>
+    </a>
+    <a href="{% url 'doctor:book_appointment' %}" class="custom-button-link">
+        Записать на приём
+        <span class="star">★</span>
+    </a> 
+    {% endif %}
+</div>
 </div>
 <!--
 {% for doc in doctors %}
@@ -30,7 +59,7 @@ Doctor {{ doc.first_name }} {{ doc.last_name }}
 </form>
 -->
 <div>
-    <table style="width: 100%;border-collapse: collapse;">
+    <table style="width: 80%;border-collapse: collapse; margin-bottom: 15%;">
         <thead style="color: black;">
             <tr>
                 <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;">Отправитель</th>
@@ -39,18 +68,112 @@ Doctor {{ doc.first_name }} {{ doc.last_name }}
                 <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;"></th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="item-list">
             {% for appointment in messages %}
-            <tr style="color:black;">
+            <tr style="color:black;" data-date="{{appointment.created_at|date:'Y-m-d'}}">
                 <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> {{ appointment.sender }} </td>
                 <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> {{ appointment.created_at }} </td>
                 <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;"> {{ appointment.body }} </td>
                 <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;">
-                    <a style="color:#A28564;text-decoration: none;" href="{% url 'doctor:inbox_current' appointment.sender.id %}">Открыть чат</a>
+                    {% if user.role == "doctor" %}
+                        <a style="color:#A28564;text-decoration: none;" href="{% url 'doctor:inbox_current' appointment.sender.id %}">Открыть чат</a>
+                    {% else %}
+                        <a style="color:#A28564;text-decoration: none;" href="{% url 'patient:inbox_current' appointment.sender.id %}">Открыть чат</a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
     </div>
+
+<!--
+<h1>Мои сообщения</h1>
+
+{% for doc in doctors %}
+Doctor {{ doc.first_name }} {{ doc.last_name }}
+ <p>     <a href="{% url 'patient:inbox_current' doc.id %}">Открыть чат</a></p></li>
+
+{% endfor %}
+{% for doc in patient %}
+Patient {{ doc.first_name }} {{ doc.last_name }}
+ <p>     <a href="{% url 'doctor:inbox_current' doc.id %}">Открыть чат</a></p></li>
+
+{% endfor %}
+<ul>
+    {% for appointment in messages %}
+<p>    sender {{ appointment.sender }} : {{ appointment.body }} {{ appointment.created_at }}</p>
+    {% endfor %}
+</ul>
+-->
+
+<form method="POST" enctype="multipart/form-data" class="send_message">
+    {% csrf_token %}
+     {{ form.receiver.as_hidden }}
+    {{form.body}}  <!-- Форма для пользователя -->
+    <br>
+    <button type="submit">Отправить</button>
+</form>
+
+
+<script>
+    // JavaScript function to open URL based on selected option
+    function sortTable() {
+        const select = document.getElementById("sortSelect");
+        const selectedValue = select.value;
+    
+            // Define URLs for each option
+        const urls = {
+            "": "", // Default (no action)
+            "name_asc": "?sort_by=name&order=asc",
+            "name_desc": "?sort_by=name&order=desc",
+            "date_added_asc": "?sort_by=date_added&order=asc",
+            "date_added_desc": "?sort_by=date_added&order=desc"
+        };
+    
+        // Open the URL associated with the selected option
+        if (urls[selectedValue]) {
+            console.log(urls[selectedValue]);
+            window.location.href = urls[selectedValue];
+        }
+    }
+
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+// Function to set default option based on URL parameter
+    function setDefaultOption() {
+        const defaultSort = getQueryParam('sort_by') + "_" + getQueryParam('order'); // Get 'sort' parameter from URL
+        if (defaultSort == "null_null")
+            defaultSort = "name_asc";
+        const select = document.getElementById("sortSelect");
+        console.log(defaultSort);
+
+        if (defaultSort) {
+            select.value = defaultSort; // Set the selected value based on the parameter
+        }
+    }
+
+// Call the function to set default option when the page loads
+    window.onload = setDefaultOption;
+
+
+
+    document.getElementById('date_filter').addEventListener('change', function() {
+    const selectedDate = this.value; // Получаем выбранную дату
+    const rows = document.querySelectorAll('#item-list tr'); // Получаем все строки таблицы
+
+    rows.forEach(row => {
+        const rowDate = row.getAttribute('data-date'); // Получаем дату из атрибута
+        if (rowDate === selectedDate) {
+            row.style.display = 'table-row'; // Показываем строку, если даты совпадают
+        } else {
+            row.style.display = 'none'; // Скрываем строку, если даты не совпадают
+        }
+    });
+});
+
+    </script>
 {% endblock %}

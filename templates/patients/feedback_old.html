@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% block page %}
+<div class="containers">
+    <div class="left-block">
+<div style="flex-grow: 1;">
+    <h1 style="margin-bottom: 20px;">Оставить отзыв</h1>
+</div>
+</div>
+<div class="right-block">
+
+    <a href="{% url 'patient:view_appointments' %}" class="back-button">
+        назад ->
+    </a>
+</div>
+</div>
+<form method="post">
+    {% csrf_token %}
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.name.label}}
+    </label>
+    <input type="text" name="name" maxlength="255" required="" id="id_name" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
+    <br>
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.number.label}}
+    </label>
+    <input type="text" name="number" maxlength="255" required="" id="id_number" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
+    <br>
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.email.label}}
+    </label>
+    <input type="text" name="email" maxlength="255" required="" id="id_email" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
+    <br>
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.message.label}}
+    </label>
+    <textarea name="message" cols="40" rows="10" required="" id="id_message" style="
+    display: block;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #D9D9D9;
+    font-size: 16px;
+    color: #333;
+    box-sizing: border-box;
+    resize: vertical; /* Разрешаем изменение размера только по вертикали */
+    transition: background-color 0.3s, border-color 0.3s;
+  "></textarea><br>
+  <label style="color: #333;margin-bottom: 8px;display: block;">
+    {{form.soglasie.label}}
+</label>
+<input type="checkbox" name="soglasie" maxlength="255" required="" id="id_soglasie" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
+<br>
+
+<button type="submit" style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: #333;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">Отправить</button>
+</form>
+{% endblock %}

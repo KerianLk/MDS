@@ -4,6 +4,15 @@
 <div style="flex-grow: 1;">
     <h1 style="margin-bottom: 20px;">Добавить страницу</h1>
     </div>
+    {% for field in form %}
+    {% if field.errors %}
+               <div class="errorlist">
+                   {% for error in field.errors %}
+                       <p class="error">{{ field.label}} {{ error }}</p>
+                   {% endfor %}
+               </div>
+           {% endif %}
+   {% endfor %}
 <form class="add_form" method="post">
     {% csrf_token %}
 
@@ -38,24 +47,6 @@
     resize: vertical; /* Разрешаем изменение размера только по вертикали */
     transition: background-color 0.3s, border-color 0.3s;
   "></textarea>
-
-    <label style="color: #333;margin-bottom: 8px;display: block;">
-        {{form.extra_data.label}}
-    </label>
-    <textarea name="extra_data" cols="40" rows="10" id="id_extra_data" style="
-    display: block;
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #D9D9D9;
-    font-size: 16px;
-    color: #333;
-    box-sizing: border-box;
-    resize: vertical; /* Разрешаем изменение размера только по вертикали */
-    transition: background-color 0.3s, border-color 0.3s;
-    "
-    >null</textarea>
 
     <label style="color: #333;margin-bottom: 8px;display: block;">
         {{form.slug.label}}

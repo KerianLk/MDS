@@ -1,12 +1,37 @@
 {% extends 'base.html' %}
-{% block content %}
-<h1>Согласие на мед. вмешательство</h1>
+{% block page %}
+<div class="containers">
+    <div class="left-block">
+<div style="flex-grow: 1;">
+  {% for field in form %}
+  {% if field.errors %}
+             <div class="errorlist">
+                 {% for error in field.errors %}
+                     <p class="error">{{ field.label}} {{ error }}</p>
+                 {% endfor %}
+             </div>
+         {% endif %}
+ {% endfor %}
+</div>
+<br>
+  <div class="link-container">
+    <a href="{% url 'patient:profile' %}"  class="link">Профиль</a>
+    <a href="{% url 'patient:medical_consent' %}"  class="link active">Анкета</a>
+  </div>
+  <br>
+
+</div>
+<div class="right-block">
+
+    <a href="{% url 'patient:view_appointments' %}" class="back-button">
+        назад ->
+    </a>
+
+</div>
+</div>
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Подтвердить</button>
 </form>
 {% endblock %}
-
-
-
