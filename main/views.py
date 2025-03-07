@@ -42,7 +42,6 @@ def page_detail(request, section_slug, page_slug):
         'title': page.title,
         'content': page.content,
         'ccc':rendered_conten,
-        'extra_data': page.extra_data or {}
     }
     print(context)
     if page_slug == 'specialists':
