@@ -1,86 +1,133 @@
 {% extends 'base.html' %}
-{% block content %}
+{% block page %}
 
-<div style="flex-grow: 1;">
-    <h1 style="margin-bottom: 20px;">Запись на прием</h1>
-    </div>
-<form method="post">
-    {% csrf_token %}
-
-    {% if user.role == "patient" %}
-    <label style="color: #333;margin-bottom: 8px;display: block;">
-        {{form.doctor.label}}
-    </label>
-    <select name="doctor" required="" id="id_doctor" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
-        {% for doctor in form.doctor %}
-            {{ doctor }}
-        {% endfor %}
-    </select>
-    {% else %}
-    <label style="color: #333;margin-bottom: 8px;display: block;">
-        {{form.patient.label}}
-    </label>
-    <select name="patient" required="" id="id_patient" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
-        {% for patient in form.patient %}
-            {{ patient }}
-        {% endfor %}
-    </select>
-    {% endif %}
-
-    <br>
-
-    <label style="color: #333;margin-bottom: 8px;display: block;">
-        {{form.usluga.label}}
-    </label>
-    <select name="usluga" required="" id="id_usluga" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;font-size: 16px;color: #333;appearance: none;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">
-        {% for usluga in form.usluga %}
-            {{ usluga }}
-        {% endfor %}
-    </select><br>
-
-    <label style="color: #333;margin-bottom: 8px;display: block;">
-        {{form.date.label}}
-    </label>
-    <input type="date" name="date" maxlength="255" required="" id="id_date" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
-    <br>
-
-    <label style="color: #333;margin-bottom: 8px;display: block;">
-        {{form.time.label}}
-    </label>
-    <input type="time" name="time" maxlength="255" required="" id="id_time" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
-    <br>
-
-    <div class="time-slots">
-        {% for value, label in form.time.field.choices %}
-            {% if value in booked_slots %}
-                <button type="button" class="slot unavailable">{{ label }}</button>
+<div class="appointment-container">
+    <div class="left-block">
+        {% for field in form %}
+        {% if field.errors %}
+                   <div class="errorlist">
+                       {% for error in field.errors %}
+                           <p class="error">{{ field.label}} {{ error }}</p>
+                       {% endfor %}
+                   </div>
+               {% endif %}
+       {% endfor %}
+        <div class="right-block">
+            {% if user.role == "doctor" %}
+            <a href="{% url 'doctor:view_appointments' %}" class="custom-button-link">
+                Записи
+                <span class="star">★</span>
+            </a>
             {% else %}
-                <button type="submit" name="time" value="{{ value }}" class="slot available">{{ label }}</button>
+            <a href="{% url 'patient:view_appointments' %}" class="back-button">
+                назад ->
+            </a>
             {% endif %}
-        {% endfor %}
-    </div>
-    <button type="submit" style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: #333;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">Записаться</button>
-</form>
-<script>
-    document.getElementById('id_date').addEventListener('change', function () {
-    const date = this.value;
-    const specialist = document.getElementById('id_doctor').value;
- console.log( fetch(`http://127.0.0.1:8000/patient/appointments/book?date=${date}&doctor=${specialist}`));
-    fetch(`http://127.0.0.1:8000/patient/appointments/book?date=${date}&doctor=${specialist}`)
-        .then(response => response.json())
-        .then(data => {
+        </div>
+    <div class="appointment-form">
+      <h2 class="book-label">Записаться на прием</h2>
+      <form method="POST">
+        {% csrf_token %}
 
-            const slotsContainer = document.querySelector('.time-slots');
-            slotsContainer.innerHTML = '';
-            data.slots.forEach(slot => {
-                const button = document.createElement('button');
-                button.textContent = slot.label;
-                button.className = slot.is_available ? 'slot available' : 'slot unavailable';
-                slotsContainer.appendChild(button);
-            });
-        });
-});
-</script>
+        <!-- Поле для выбора врача -->
+        <div class="form-group">
+
+            {% if user.role == "patient" %}
+            <label for="doctor">
+                {{form.doctor.label}}
+            </label>
+            <select name="doctor" required="" id="id_doctor" class="input-field">
+                {% for doctor in form.doctor %}
+                    {{ doctor }}
+                {% endfor %}
+            </select>
+            {% else %}
+            <label>
+                {{form.patient.label}}
+            </label>
+            <select name="patient" required="" id="id_patient" class="input-field">
+                {% for patient in form.patient %}
+                    {{ patient }}
+                {% endfor %}
+            </select>
+            {% endif %}
+            <br>
+
+            <label>
+                {{form.usluga.label}}
+            </label>
+            <select name="usluga" required="" id="id_usluga" class="input-field">
+                {% for usluga in form.usluga %}
+                    {{ usluga }}
+                {% endfor %}
+            </select>
+            <br>
+
+        </div>
+
+        <!-- Поле для выбора даты -->
+        <div class="form-group">
+          <label for="date">Выберите дату:</label>
+          <input type="date" name="date" maxlength="255" required="" id="id_date" class="input-field">
+        </div>
+        <input type="hidden" name="time" maxlength="255" required="" id="id_time" value="">
+
+        <!-- Поле для выбора времени -->
+        <div class="form-group">
+          <label>Выберите время:</label>
+          <div class="time-buttons">
+            <button type="button" class="time-button" value="09:00">09:00</button>
+            <button type="button" class="time-button" value="09:30">09:30</button>
+            <button type="button" class="time-button" value="10:00">10:00</button>
+            <button type="button" class="time-button" value="10:30">10:30</button>
+            <button type="button" class="time-button" value="11:00">11:00</button>
+            <button type="button" class="time-button" value="11:30">11:30</button>
+            <button type="button" class="time-button" value="12:00">12:00</button>
+            <button type="button" class="time-button" value="12:30">12:30</button>
+            <button type="button" class="time-button" value="13:00">13:00</button>
+            <button type="button" class="time-button" value="13:30">13:30</button>
+            <button type="button" class="time-button" value="14:00">14:00</button>
+            <button type="button" class="time-button" value="14:30">14:30</button>
+            <button type="button" class="time-button" value="15:00">15:00</button>
+            <button type="button" class="time-button" value="15:30">15:30</button>
+            <button type="button" class="time-button" value="16:00">16:00</button>
+            <button type="button" class="time-button" value="16:30">16:30</button>
+            <button type="button" class="time-button" value="17:00">17:00</button>
+            <button type="button" class="time-button" value="17:30">17:30</button>
+            <button type="button" class="time-button" value="18:00">18:00</button>
+            <button type="button" class="time-button" value="18:30">18:30</button>
+            <button type="button" class="time-button" value="19:00">19:00</button>
+            <button type="button" class="time-button" value="19:30">19:30</button>
+          </div>
+        </div>
+
+        <!-- Кнопка отправки формы -->
+        <div class="form-group">
+          <button type="submit" class="submit-button">Записаться</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {% if form.date.errors %}
+  <div class="error">{{ form.date.errors }}</div>
+{% endif %}
+{% if form.time.errors %}
+  <div class="error">{{ form.time.errors }}</div>
+{% endif %}
+
+  <script>
+    document.querySelectorAll('.time-button').forEach(button => {
+      button.addEventListener('click', () => {
+        // Убираем выделение у всех кнопок
+        document.querySelectorAll('.time-button').forEach(btn => btn.classList.remove('selected'));
+        // Выделяем текущую кнопку
+        button.classList.add('selected');
+        document.getElementById("id_time").value = button.value;
+        console.log(button.value);
+      });
+    });
+  </script>
+
 
 {% endblock %}
-

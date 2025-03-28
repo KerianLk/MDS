@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
-{% block content %}
+{% block page %}
 
+<div class="containers">
+    <div class="left-block">
 <div style="flex-grow: 1;">
     <h1 style="margin-bottom: 20px;">Мои записи</h1>
 </div>
+<br>
+  <div class="link-container">
+    <a href="{% url 'patient:view_appointments' %}"  class="link active">Предстоящие записи</a>
+    <a href="{% url 'patient:view_history' %}"  class="link">История посещений</a>
+    <a href="{% url 'patient:researches' %}"  class="link">Исследования и снимки</a>
+  </div>
+  <br>
 <div>
 Сортировать: 
 <select id="sortSelect" onchange="sortTable()" style="-webkit-appearance: none;-moz-appearance: none;appearance: none;width: 300px;padding: 10px;border:none; background-color: #FFF3E5;color: #333;font-size: 16px;cursor: pointer;transition: border-color 0.3s ease;">
@@ -14,8 +23,7 @@
 </select>
 </div>
 <br>
-
-
+{% if appointments.count > 0 %}
 <div>
     <table style="width: 100%;border-collapse: collapse;">
         <thead style="color: black;">
@@ -40,6 +48,39 @@
         </tbody>
     </table>
     </div>
+    {% else %}
+    <b> Нет предстоящих записей</b>
+    {% endif %}
+</div>
+<div class="right-block">
+    <a href="{% url 'patient:profile' %}" class="back-button">
+        перейти в профиль
+    </a>
+    <div style="background-color: white;width: 270px; height: 80px;padding: 10px;">
+    <a href="{% url 'patient:book_appointment' %}" class="button-patient-orange-first">
+        Записаться онлайн
+        <span class="star">★</span>
+    </a>
+</div>
+<div style="background-color: white;width: 310px; height: 100px;padding: 20px;margin-left: -20px;margin-top: 20px;">
+    <a href="{% url 'patient:order_call' %}" class="button-patient-orange-second">
+        Записаться по телефону
+    </a> 
+</div>
+<div style="background-color: #A2856461;width: 270px; height: 80px;padding: 10px;margin-top: 20px;">
+    <a href="{% url 'patient:feedback' %}" class="button-patient-orange-third">
+        Оставить отзыв
+        <span class="star">★</span>
+    </a>
+</div>
+<div style="margin-top: 20px;">
+    <a href="{% url 'patient:send_message' %}" class="button-patient-orange-third">
+        Написать врачу
+        <span class="star">★</span>
+    </a> 
+</div>
+</div>
+
 
 
     <script>

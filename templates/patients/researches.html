@@ -1,6 +1,21 @@
 {% extends 'base.html' %}
-{% block content %}
-<h1>Мои исследования</h1>
+{% block page %}
+<div class="containers">
+    <div class="left-block">
+<div style="flex-grow: 1;">
+    <h1 style="margin-bottom: 20px;">Мои исследования</h1>
+</div>
+<br>
+  <div class="link-container">
+    <a href="{% url 'patient:view_appointments' %}"  class="link">Предстоящие записи</a>
+    <a href="{% url 'patient:view_history' %}"  class="link">История посещений</a>
+    <a href="{% url 'patient:researches' %}"  class="link active">Исследования и снимки</a>
+  </div>
+  <br>
+
+
+</div>
+</div>
 <ul>
     {% for appointment in messages %}
 <p>    doctor {{ appointment.doctor }}</p>

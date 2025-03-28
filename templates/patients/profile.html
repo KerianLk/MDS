@@ -1,24 +1,105 @@
-
-
 {% extends 'base.html' %}
-{% block content %}
+{% block page %}
 
-    <h1>Профиль пользователя</h1>
-    {% if profile.avatar %}
-        <img src="{{ profile.avatar.url }}" alt="Аватар" style="width: 150px; height: 150px; border-radius: 50%;">
-    {% else %}
-        <p>Аватар не установлен</p>
+<div class="containers">
+    <div class="left-block">
+<div style="flex-grow: 1;">
+
+</div>
+<br>
+  <div class="link-container">
+    <a href="{% url 'patient:profile' %}"  class="link active">Профиль</a>
+    <a href="{% url 'patient:patient_survey' %}"  class="link">Анкета</a>
+  </div>
+  <br>
+
+</div>
+<div class="right-block">
+
+    <a href="{% url 'patient:view_appointments' %}" class="back-button">
+        назад ->
+    </a>
+    <br>
+    <a href="{% url 'patient:edit_profile' %}" class="back-button">Изменить</a>
+
+</div>
+</div>
+  {% csrf_token %}
+<div class="profile-container">
+    <!-- Левая часть: фото пациента -->
+    <div class="photo-section">
+        {% if profile.avatar %}
+      <img src="{{ profile.avatar.url }}" alt="Фото пациента" class="patient-photo">
+      {% else %}
+        <p class="patient-photo" style="padding-left: 15%; padding-top: 50%;">Hе установлен</p>
     {% endif %}
+    </div>
 
-    <p>Имя: {{ user.first_name }}</p>
-    <p>Фамилия: {{ user.last_name }}</p>
-    <p>Отчество: {{ user.middle_name }}</p>
-    <p>Дата рождения: {{ user.date_of_birth }}</p>
-    <p>Пол: {{ profile.get_gender_display }}</p>
-    <p>Серия паспорта: {{ profile.passport_serial }}</p>
-    <p>Номер паспорта: {{ profile.passport_number }}</p>
-    <p>Дата выдачи паспорта: {{ profile.passport_date_of_issue }}</p>
-    <p>Кем выдан: {{ profile.passport_issued_by }}</p>
-     <a href="{% url 'patient:edit_profile' %}">Изменить</a>
+    <!-- Центральная часть: основная информация -->
+    <div class="info-section">
+      <div class="info-item">
+        <span class="label">Пол:</span>
+        <input type="text" id="id_gender" value="{{ profile.gender }}" class="input-field" readonly>
+      </div>
+      <div class="info-item">
+        <span class="label">Имя:</span>
+        <input type="text" id="id_first_name" value="{{ user.first_name }}" class="input-field" readonly>
+      </div>
+      <div class="info-item">
+        <span class="label">Отчество:</span>
+        <input type="text" id="id_middle_name" value="{{ user.middle_name }}" class="input-field" readonly>
+      </div>
+      <div class="info-item">
+        <span class="label">Фамилия:</span>
+        <input type="text" id="id_last_name" value="{{ user.last_name }}" class="input-field" readonly>
+      </div>
+      <div class="info-item">
+        <span class="label">Дата рождения:</span>
+        <input type="text" id="id_date_of_birth" value="{{ user.date_of_birth }}" class="input-field" readonly>
+      </div>
+      <div class="info-item">
+        <span class="label">Логин:</span>
+        <input type="text" id ="id_username" value="{{ user.username }}" class="input-field" readonly>
+      </div>
+      <div class="info-item">
+        <span class="label">Пароль:</span>
+        <input type="password" id="id_password" value="********" class="input-field" readonly>
+      </div>
+    </div>
+
+    <!-- Правая часть: дополнительная информация -->
+    <div class="additional-info-section">
+
+      <div class="info-item">
+        <span class="label">СНИЛС:</span>
+        <input type="text" id="id_snils" value="{{ profile.snils }}" class="input-field" readonly>
+      </div>
+      <div class="info-item">
+        <span class="label">ОМС:</span>
+        <input type="text" id="id_dms" value="{{ profile.dms }}" class="input-field" readonly>
+      </div>
+      <div class="info-item">
+        <span class="label">Серия паспорта:</span>
+        <input type="text" id="id_passport_series" value="{{ profile.passport_series }}" class="input-field" readonly>
+      </div>
+      <div class="info-item">
+        <span class="label">Номер паспорта:</span>
+        <input type="text" id="id_passport_number" value="{{ profile.passport_number }}" class="input-field" readonly>
+      </div>
+      <div class="info-item">
+        <span class="label">Фото паспорта:</span>
+        {% if profile.passport_photo1 %}
+        <img src="{{ profile.passport_photo1.url }}" alt="Фото паспорта" class="passport-photo">
+        {% else %}
+        <p> нет фото </p>
+        {% endif %}
+        {% if profile.passport_photo2 %}
+        <img src="{{ profile.passport_photo2.url }}" alt="Фото паспорта" class="passport-photo">
+        {% endif %}
+      </div>
+    </div>
+
+    
+  </div>
 
 {% endblock %}

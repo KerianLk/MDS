@@ -2,31 +2,40 @@ from django import forms
 from .models import *
 from users.models import *
 from django.core.validators import RegexValidator
-class AppointmentFormPatient(forms.ModelForm):
-    #date = forms.DateField(widget=forms.SelectDateWidget)
-    time = forms.ChoiceField(choices=[])
+from django.core.exceptions import ValidationError
+from django.forms import Select
+from django import forms
+
+class TimeSelectWidget(forms.Select):
+    def __init__(self, attrs=None):
+        super().__init__(attrs)
+        self.choices = self.get_time_choices()
+
+    def get_time_choices(self):
+        times = []
+        for hour in range(9, 18):  # С 9 до 18
+            for minute in ['00', '30']:  # Шаг 30 минут
+                time_str = f"{hour:02d}:{minute}"
+                times.append((time_str, time_str))  # (Значение, Подсказка)
+        return times
+
+class AppointmentForm(forms.ModelForm):
     class Meta:
         model = Appointment
-        fields = ['doctor','usluga', 'date', 'time']
+        fields = ['doctor', 'usluga', 'date', 'time']
         widgets = {
-             'date': forms.DateInput(attrs={'type': 'date'}),
-        #     'time': forms.TimeInput(attrs={'type': 'time'}),
-         }
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'time': TimeSelectWidget(),
+        }
 
-    def __init__(self, *args, **kwargs):
-        available_slots = kwargs.pop('available_slots', [])
-        super().__init__(*args, **kwargs)
-        self.fields['time'].choices = [(slot, slot.strftime("%H:%M")) for slot in available_slots]
-    def clean(self):
-        cleaned_data = super().clean()
-        date = cleaned_data.get('date')
-        time = cleaned_data.get('time')
-        doctor = cleaned_data.get('doctor')
-
-        # Проверяем, есть ли уже запись на это время
-        #if Appointment.objects.filter(date=date, time=time,doctor='doctor').exists():
-        #    raise forms.ValidationError("На выбранное время уже есть запись.")
-        #return cleaned_data
+    def clean_time(self):
+        time = self.cleaned_data['time']
+        hour, minute = map(int, time.split(':'))
+        if hour < 9 or hour >= 18:
+            raise ValidationError("Записи доступны только с 9:00 до 18:00.")
+        if minute not in [0, 30]:
+            raise ValidationError("Записи доступны только с интервалом 30 минут.")
+        return time
 
 
 class MessageForm(forms.ModelForm):
@@ -83,6 +92,9 @@ class UserProfileForm(forms.ModelForm):
     class Meta:
             model = UserProfile
             fields = ['avatar', 'snils', 'dms', 'gender', 'passport_series', 'passport_number', 'passport_date_of_issue', 'passport_issued_by', 'passport_photo1', 'passport_photo2']
+            widgets = {
+            'passport_date_of_issue': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 
 
@@ -92,6 +104,9 @@ class UserDataForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'first_name','middle_name', 'last_name','date_of_birth']
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 
 
@@ -120,6 +135,9 @@ class MedicalConsentForm(forms.ModelForm):
     class Meta:
         model = MedicalConsent
         fields = ['full_name', 'passport_series', 'passport_number', 'passport_issued_by', 'address', 'consent_date', 'signature']
+        widgets = {
+            'consent_date': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 class OrderCallForm(forms.ModelForm):
     phone = forms.CharField(min_length=11, max_length=11,validators=[

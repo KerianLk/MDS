@@ -5,6 +5,16 @@
 <h1 style="margin-bottom: 20px;">Добавить раздел</h1>
 </div>
 <div>
+   {% for field in form %}
+   {% if field.errors %}
+              <div class="errorlist">
+                  {% for error in field.errors %}
+                      <p class="error">{{ field.label}} {{ error }}</p>
+                  {% endfor %}
+              </div>
+          {% endif %}
+  {% endfor %}
+
 <form class="add_form" method="post">
     {% csrf_token %}
      <label style="color: #333;margin-bottom: 8px;display: block;">

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
-{% block content %}
-
+{% block page %}
+<div class="containers">
+    <div class="left-block">
 <div style="flex-grow: 1;">
     <h1 style="margin-bottom: 20px;">Мои записи</h1>
 </div>
@@ -13,9 +14,21 @@
     <option value="date_added_desc" style="padding: 10px;">по дате добавления (по убыванию)</option>
 </select>
 </div>
+</div>
+<div class="right-block">
+    <a href="{% url 'doctor:inbox' %}" class="custom-button-link">
+        Сообщения
+        <span class="star">★</span>
+    </a>
+    <a href="{% url 'doctor:book_appointment' %}" class="custom-button-link">
+        Записать на приём
+        <span class="star">★</span>
+    </a> 
+</div>
+</div>
 <br>
 <div>
-    <table style="width: 100%;border-collapse: collapse;">
+    <table style="width: 80%;border-collapse: collapse; margin-bottom: 15%;">
         <thead style="color: black;">
             <tr>
                 <th style="color: #333;padding: 10px;text-align: left;border-right: 1px solid black; border-bottom: 1px solid black;">ФИО пациента</th>
@@ -35,7 +48,7 @@
                 <td style="padding: 10px;border-right: 1px solid black; font-size: 15px;">
                     <a style="color:#A28564;text-decoration: none;" href="{% url 'doctor:view_history' appointment.patient.id %}">История посещений</a>
                     <br>
-                    <a style="color:#A28564;text-decoration: none;" href="{% url 'doctor:inbox_current' appointment.patient.id %}">Открыть чат</a>
+                    <a style="color:#A28564;text-decoration: none;" href="{% url 'doctor:send_message_to_patient' appointment.patient.id %}">Открыть чат</a>
                     <br>
                     <a style="color:#A28564;text-decoration: none;" href="{% url 'doctor:delete_appointment' appointment.id %}">Удалить</a>
                 </td>

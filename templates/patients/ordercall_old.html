@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block page %}
+<div class="containers">
+    <div class="left-block">
+<div style="flex-grow: 1;">
+    <h1 style="margin-bottom: 20px;">Заказать звонок</h1>
+</div>
+{% for field in form %}
+{% if field.errors %}
+           <div class="errorlist">
+               {% for error in field.errors %}
+                   <p class="error">{{ field.label}} {{ error }}</p>
+               {% endfor %}
+           </div>
+       {% endif %}
+{% endfor %}
+</div>
+<div class="right-block">
+
+    <a href="{% url 'patient:view_appointments' %}" class="back-button">
+        назад ->
+    </a>
+
+</div>
+</div>
+<form method="post">
+    {% csrf_token %}
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.name.label}}
+    </label>
+    <input type="text" name="name" maxlength="255" required="" id="id_name" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
+    <br>
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.phone.label}}
+    </label>
+    <input type="text" name="phone" maxlength="255" required="" id="id_phone" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
+    <br>
+    <label style="color: #333;margin-bottom: 8px;display: block;">
+        {{form.signature.label}}
+    </label>
+    <input type="checkbox" name="signature" maxlength="255" required="" id="id_signature" style="display: block;width: 100%;padding: 10px;border: 1px solid #ccc;border-radius: 4px;background-color: #D9D9D9;box-sizing: border-box;font-size: 16px;color: #333;">
+    <br>
+    <button type="submit" style="display: inline-block;padding: 10px 20px;background-color: #D9D9D9;border: 1px solid #ccc;border-radius: 4px;font-size: 16px; color: #333;cursor: pointer;transition: background-color 0.3s, border-color 0.3s;">Перезвоните</button>
+<br>
+</form>
+<br>
+
+
+{% endblock %}
