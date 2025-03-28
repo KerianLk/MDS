@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor'
 ]
 
 MIDDLEWARE = [
@@ -138,3 +139,16 @@ AUTH_USER_MODEL = 'users.User'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_TIMEOUT = 10
+EMAIL_HOST = 'smtp.yandex.ru'          # Адрес SMTP-сервера. Например, для Gmail: 'smtp.gmail.com'
+EMAIL_PORT = 465                         # Порт SMTP-сервера. Для TLS обычно 587, для SSL – 465
+#EMAIL_USE_TLS = True                     # Включите TLS, если сервер его поддерживает (например, Gmail)
+# Если используете SSL, можно использовать:
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'lesya.ilina2016@yandex.ru'      # Ваш email (логин для SMTP)
+EMAIL_HOST_PASSWORD = 'znsinkxsrxlowoqz'       # Пароль или специальный пароль приложения
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
